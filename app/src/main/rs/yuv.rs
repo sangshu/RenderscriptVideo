@@ -5,10 +5,8 @@
 rs_allocation gIn;
 
 
-
-void yuvToRgb_greyscale(const uchar *v_in, uchar4 *v_out, uint32_t x, uint32_t y) {
+uchar4 RS_KERNEL yuvToRgb_greyscale(uint32_t x, uint32_t y) {
      uchar yp = rsGetElementAtYuv_uchar_Y(gIn, x, y) & 0xFF;
-
 
     uchar4 res4;
     res4.r = yp;
@@ -16,5 +14,5 @@ void yuvToRgb_greyscale(const uchar *v_in, uchar4 *v_out, uint32_t x, uint32_t y
     res4.b = yp;
     res4.a = 0xFF;
 
-    *v_out = res4;
+    return res4;
 }
