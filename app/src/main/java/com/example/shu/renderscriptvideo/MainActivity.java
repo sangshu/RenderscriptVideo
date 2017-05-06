@@ -184,8 +184,9 @@ public class MainActivity extends AppCompatActivity implements
                                         ByteBuffer buffer = outputBuffers[outIndex];
                                         Log.v("DecodeActivity", "We can't use this buffer but render it due to the API limit, " + buffer);
 
-//from
-                                        if(info.size>0) {
+//
+                                        if(info.size>0){
+
                                             // allocate byte buffer to temporarily hold decoded frame, input to renderscript
                                             // 3/2 because the decoder outputs NV12 which has 12bits per pixel
                                             byte[] mLocalOutputBuffers = new byte[info.size];
@@ -193,18 +194,20 @@ public class MainActivity extends AppCompatActivity implements
                                             buffer.get(mLocalOutputBuffers);
                                             //outputBuffers[outIndex].rewind();
 
-                                            mAllocationYUV.copyFrom(mLocalOutputBuffers);
-                                            outputBuffers[outIndex].rewind();
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    mScript.forEach_yuvToRgb_greyscale(mAllocationOUT);
-                                                    mAllocationOUT.ioSend();
-                                                }
-                                            }).start();
+                                            if(mAllocationYUV!= null) {
+                                                mAllocationYUV.copyFrom(mLocalOutputBuffers);
+                                                outputBuffers[outIndex].rewind();
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        mScript.forEach_yuvToRgb_greyscale(mAllocationOUT);
+                                                        mAllocationOUT.ioSend();
+                                                    }
+                                                }).start();
+                                            }
                                         }
 
-//to
+//
 
 
                                         // We use a very simple clock to keep the video FPS, or the video
